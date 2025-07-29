@@ -23,7 +23,7 @@
 
     <label class="label" v-if="$state.animations">Transition speed</label>
     <div class="slider-container" v-show="$state.animations">
-      <Slider class="slider" :min="100" :max="200" :step="10" v-model="$state.transitionTime"/>
+      <Slider class="slider" :min="1" :max="500" :step="1" v-model="$state.transitionTime"/>
       <span>{{ $state.transitionTime }} ms</span>
     </div>
 
@@ -43,13 +43,13 @@
     <a @click="exportSolves('json')">Export solves as JSON</a>
 
     <Dialog
-      :title="clearType == 'all' ? 'Clear all data' : 'Delete all data for the current event'"
-      :open.sync="clearDialog"
-      @confirm="clearData(clearType, true)"
-    >
-      <p v-if="clearType == 'event'">All solves from the current event will be gone.</p>
-      <p v-else>This will delete all data including solves and modifications to the settings.</p>
-    </Dialog>
+  :title="clearType == 'all' ? 'Clear all data' : 'Delete all data for the current event'"
+  :open.sync="clearDialog"
+  @confirm="clearType && clearData(clearType, true)"
+>
+  <p v-if="clearType == 'event'">All solves from the current event will be gone.</p>
+  <p v-else>This will delete all data including solves and modifications to the settings.</p>
+  </Dialog>
   </Dialog>
 </template>
 
