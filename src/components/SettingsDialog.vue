@@ -20,6 +20,36 @@
       <input v-model="$state.animations" type="checkbox" />
       <span>Enable animations</span>
     </label>
+    <label class="checkbox">
+      <input v-model="$state.customColors" type="checkbox" :checked="$state.customColors" />
+      <span>Enable custom colors</span>
+    </label>
+        <label class="label">Custom Colors</label>
+    <div v-if="$state.customColors">
+      <div class="slider-container">
+        <span>Min. brightness (m):</span>
+        <Slider class="slider" :min="0" :max="0.5" :step="0.01" v-model="$state.colorMinBrightness"/>
+        <span>{{ $state.colorMinBrightness.toFixed(2) }}</span>
+      </div>
+      <div class="slider-container">
+        <span>Hue range:</span>
+        <Slider class="slider" :min="100" :max="360" :step="1" v-model="$state.colorHueRange"/>
+        <span>{{ $state.colorHueRange }}</span>
+      </div>
+      <div class="slider-container">
+        <span>Chroma (c):</span>
+        <Slider class="slider" :min="0.5" :max="2" :step="0.01" v-model="$state.colorChroma"/>
+        <span>{{ $state.colorChroma.toFixed(2) }}</span>
+      </div>
+      <label class="checkbox">
+        <input type="checkbox" v-model="$state.colorChromaMultiplied"/>
+        <span>Multiply chroma by gradient</span>
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" v-model="$state.lightToDark" :checked="$state.customColors"/>
+        <span>Light to Dark Gradient (Rows)</span>
+      </label>
+    </div>
 
     <label class="label" v-if="$state.animations">Transition speed</label>
     <div class="slider-container" v-show="$state.animations">

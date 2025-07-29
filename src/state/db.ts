@@ -38,6 +38,11 @@ export interface Settings {
   transitionTime: number
   animations?: boolean
   hideInspectHint?: boolean
+  colorMinBrightness?: number
+  colorChroma?: number
+  colorChromaMultiplied?: boolean
+  colorHueRange?: number
+  lightToDark?: boolean
 }
 
 export function loadSettings(state: State, settings: Settings) {
@@ -61,7 +66,12 @@ export function saveSettings(state: State) {
     event: state.event,
     letterSystem: state.letterSystem,
     transitionTime: state.transitionTime,
-    animations: state.animations
+    animations: state.animations,
+    colorMinBrightness: state.colorMinBrightness,
+    colorChroma: state.colorChroma,
+    colorChromaMultiplied: state.colorChromaMultiplied,
+    colorHueRange: state.colorHueRange,
+    lightToDark: state.lightToDark
   }
 
   if (state.noRegrips) settings.noRegrips = true

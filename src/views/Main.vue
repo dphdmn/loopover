@@ -257,10 +257,11 @@ export default class App extends Vue {
       state.reset()
     }, { immediate: true })
 
-    this.$watch(() => [state.darkText, state.boldText, state.letterSystem, state.transitionTime, state.animations], () => {
+    this.$watch(() => [state.darkText, state.boldText, state.letterSystem, state.transitionTime, state.animations, state.customColors, state.colorChroma, state.colorChromaMultiplied, state.colorMinBrightness, state.colorHueRange, state.lightToDark], () => {  
       state.game.setDarkText(state.darkText)
       state.game.setBoldText(state.boldText)
       state.game.setLetterSystem(state.letterSystem)
+      state.game.setUseCustomColors(state.customColors, state.colorChroma, state.colorChromaMultiplied, state.colorMinBrightness, state.colorHueRange, state.lightToDark)
       state.game.transitionTime = state.animations ? state.transitionTime : 0
     }, { immediate: true })
 

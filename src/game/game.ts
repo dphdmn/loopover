@@ -28,6 +28,12 @@ export class Game {
 
   private ctx: CanvasRenderingContext2D
 
+  customColors = false
+  inverted = true
+  colorMinBrightness = 0
+  colorChroma = 0.8
+  colorChromaMultiplied = true
+  colorHueRange = 250
   darkText = false
   boldText = false
   noRegrips = false
@@ -97,6 +103,16 @@ export class Game {
   setDarkText(darkText: boolean) {
     this.darkText = darkText
     this.repaint = true
+  }
+
+  setUseCustomColors(customColors: boolean, colorChroma = 0.5, colorChromaMultiplied = true, colorMinBrightness = 0, colorHueRange = 250, lightToDark = true) {
+    this.customColors = customColors
+    this.colorMinBrightness = colorMinBrightness
+    this.colorChroma = colorChroma
+    this.colorChromaMultiplied = colorChromaMultiplied
+    this.colorHueRange = colorHueRange
+    this.repaint = true
+    this.inverted = lightToDark
   }
 
   setBoldText(boldText: boolean) {
@@ -200,11 +216,68 @@ export class Game {
           const cx = (index % this.cols + 0.1) / (this.cols - 0.7)
           const cy = (Math.floor(index / this.cols) + 0.2) / (this.rows - 0.6)
 
-          const r = (1 - cx) * 252
-          const g = cy * 228 + cx * (1 - cy) * 40
-          const b = cx * 220
+          if (this.customColors) {
+            // Calculate position in solved board
+            const solvedRow = Math.floor(index / this.cols);
+            const solvedCol = index % this.cols;
 
-          this.ctx.fillStyle = `rgb(${Math.floor(r)},${Math.floor(g)},${Math.floor(b)})`
+            // Determine color group
+            let colorGroup;
+            if (solvedRow === this.rows - 1) {
+              // Last row in solved board - special color
+              colorGroup = this.rows + 2;
+            } else if (solvedCol === this.cols - 1) {
+              // Last column in solved board - special color
+              colorGroup = this.rows;
+            } else {
+              // Normal tile - use its row in solved board
+              colorGroup = solvedRow + 1;
+            }
+
+            // Calculate base hue (0°=red, 120°=green, 240°=blue)
+            const hue = ((colorGroup - 1) / this.rows) * this.colorHueRange;
+
+            // Gradient: 
+            // For last column → vertical gradient based on row
+            // Otherwise → horizontal gradient based on column
+            let gradient;
+            if (solvedCol === this.cols - 1) {
+              gradient = 0.7 + 0.3 * (solvedRow / (this.rows - 1)); // top to bottom
+            } else {
+              gradient = 0.7 + 0.3 * (solvedCol / (this.cols - 1)); // left to right
+            }
+            if (this.inverted && (solvedCol !== this.cols - 1) && (solvedRow !== this.rows - 1)) {
+              gradient = 1.7 - gradient;
+            }
+
+            // HSL to RGB (less vibrant)
+            const h = hue / 60;
+            let c = this.colorChroma;
+            if (this.colorChromaMultiplied) c *= gradient;
+            const x = c * (1 - Math.abs((h % 2) - 1));
+            const m = this.colorMinBrightness;;
+
+            let r, g, b;
+            if (h < 1) [r, g, b] = [c, x, 0];
+            else if (h < 2) [r, g, b] = [x, c, 0];
+            else if (h < 3) [r, g, b] = [0, c, x];
+            else if (h < 4) [r, g, b] = [0, x, c];
+            else if (h < 5) [r, g, b] = [x, 0, c];
+            else[r, g, b] = [c, 0, x];
+
+            // Apply gradient and convert to RGB
+            r = Math.floor((r + m) * gradient * 255);
+            g = Math.floor((g + m) * gradient * 255);
+            b = Math.floor((b + m) * gradient * 255);
+
+            this.ctx.fillStyle = `rgb(${r},${g},${b})`;
+          }
+          else {
+            const r = (1 - cx) * 252
+            const g = cy * 228 + cx * (1 - cy) * 40
+            const b = cx * 220
+            this.ctx.fillStyle = `rgb(${Math.floor(r)},${Math.floor(g)},${Math.floor(b)})`
+          }
           this.ctx.fillRect(Math.floor(x), Math.floor(y), this.tileSize, this.tileSize)
           this.ctx.fillStyle = this.darkText ? "rgba(0, 0, 0, 0.9)" : "#fff"
 
@@ -216,8 +289,8 @@ export class Game {
             const y = Math.floor(index / this.cols)
             text = String.fromCharCode(x + (x < 26 ? 65 : 71))
               + (this.letterSystem == "hybrid"
-                  ? (y + 1).toString()
-                  : String.fromCharCode(y + (y < 26 ? 65 : 71)))
+                ? (y + 1).toString()
+                : String.fromCharCode(y + (y < 26 ? 65 : 71)))
           } else {
             text = (index + 1).toString()
           }

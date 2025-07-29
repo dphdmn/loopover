@@ -23,8 +23,14 @@ export class State {
   darkText = false
   boldText = false
   animations = true
+  customColors = true
   transitionTime = 150
   hideInspectHint = false
+  colorMinBrightness = 0.15
+  colorChroma = 0.7
+  colorChromaMultiplied = true
+  colorHueRange = 250
+  lightToDark = true
 
   started = false
   scrambled = false
