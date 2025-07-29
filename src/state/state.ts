@@ -29,7 +29,7 @@ export class State {
   colorMinBrightness = 0.15
   colorChroma = 0.7
   colorChromaMultiplied = true
-  colorHueRange = 250
+  colorHueRange = 280
   lightToDark = true
 
   started = false

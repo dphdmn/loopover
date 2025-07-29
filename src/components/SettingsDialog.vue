@@ -33,7 +33,7 @@
       </div>
       <div class="slider-container">
         <span>Hue range:</span>
-        <Slider class="slider" :min="100" :max="360" :step="1" v-model="$state.colorHueRange"/>
+        <Slider class="slider" :min="0" :max="280" :step="1" v-model="$state.colorHueRange"/>
         <span>{{ $state.colorHueRange }}</span>
       </div>
       <div class="slider-container">
