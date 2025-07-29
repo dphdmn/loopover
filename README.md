@@ -35,5 +35,9 @@ npm run serve
 npm run build
 ```
 
+#### For building to prod. on new version of node js use this option:
+
+``set NODE_OPTIONS=--openssl-legacy-provider && npm run build``
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
